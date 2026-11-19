@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N2N LAN Pro — 虚拟局域网专业版</title>
+<meta name="description" content="N2N LAN Pro：在 8 位房间码异地组网的基础上，补上网络诊断、连接审计、房间库与高级参数；房间码与免费版完全互通。">
+<style>
+  :root{
+    --bg:#0B1014; --surface:#111820; --surface2:#16202A; --border:#223140;
+    --text:#E9E7E2; --muted:#98A3AE; --accent:#63C74D; --pro:#E4655F; --amber:#D9A33F;
+    --radius:14px; --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    --mono:"Cascadia Code","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:var(--font); line-height:1.7; -webkit-font-smoothing:antialiased}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px}
+  nav{border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(11,16,20,.86); backdrop-filter:blur(10px); z-index:10}
+  .nav-inner{display:flex; align-items:center; gap:22px; height:62px}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:800}
+  .logo .dot{width:26px; height:26px; border-radius:8px; background:var(--pro); display:flex; align-items:center; justify-content:center; color:#0B1014; font-size:13px; font-weight:900}
+  .nav-links{display:flex; gap:18px; margin-left:auto; align-items:center; font-size:14.5px}
+  .nav-links a{color:var(--muted)}
+  .nav-links a:hover{color:var(--text); text-decoration:none}
+  .gh{border:1px solid var(--border); padding:6px 12px; border-radius:999px}
+  header.hero{padding:86px 0 64px; text-align:center}
+  .badge{display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(228,101,95,.5); color:var(--pro); font-size:13px; padding:5px 12px; border-radius:999px; margin-bottom:22px}
+  h1{font-size:46px; line-height:1.18; margin:0 0 14px; letter-spacing:-1px}
+  h1 .pro{display:inline-block; background:var(--pro); color:#0B1014; font-size:14px; padding:3px 9px; border-radius:8px; vertical-align:middle; margin-left:10px; letter-spacing:1px}
+  .sub{color:var(--muted); font-size:17px; max-width:720px; margin:0 auto 30px}
+  .cta{display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
+  .btn{display:inline-block; padding:12px 22px; border-radius:10px; font-weight:700; font-size:15px; border:1px solid transparent}
+  .btn.primary{background:var(--accent); color:#0B1014}
+  .btn.ghost{border-color:var(--border); color:var(--text)}
+  .btn:hover{text-decoration:none; filter:brightness(1.06)}
+  section{padding:66px 0}
+  .sec-head{margin-bottom:30px}
+  h2{font-size:30px; margin:0 0 10px; letter-spacing:-.5px}
+  .sec-head p{color:var(--muted); margin:0}
+  .shot{border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--surface); margin-top:34px}
+  .shot img{display:block; width:100%; height:auto}
+  .shot .cap{font-size:12.5px; color:var(--muted); padding:10px 14px; border-top:1px solid var(--border)}
+  .cards{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px 22px}
+  .card.pro{border-color:rgba(228,101,95,.34)}
+  .card h3{margin:0 0 10px; font-size:17px}
+  .card.pro h3{color:var(--pro)}
+  .card p{color:var(--muted); font-size:14px; margin:0}
+  .dl{display:grid; grid-template-columns:1.15fr 1fr; gap:16px; margin-top:26px}
+  .box{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:26px 24px; display:flex; flex-direction:column; gap:8px}
+  .box.pro{border-color:rgba(228,101,95,.34)}
+  .box h3{margin:0; font-size:17px}
+  .box.pro h3{color:var(--pro)}
+  .meta{font-family:var(--mono); font-size:12.5px; color:var(--muted)}
+  .box p{color:var(--muted); font-size:14px; margin:0}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+  .link{display:block; margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--muted); background:var(--bg); border:1px dashed var(--border); border-radius:8px; padding:9px 11px; word-break:break-all; user-select:all}
+  .tip{font-size:12px; color:var(--muted); margin-top:6px}
+  .tip code{font-family:var(--mono); font-size:11.5px; color:var(--text); word-break:break-all}
+  pre{background:#0A0F13; border:1px solid var(--border); border-radius:12px; padding:18px 20px; overflow:auto; font-family:var(--mono); font-size:13px; color:#CFE3D3; margin:18px 0 0}
+  table{width:100%; border-collapse:collapse; margin-top:14px; font-size:14px}
+  th,td{border-bottom:1px solid var(--border); padding:10px 8px; text-align:left; vertical-align:top}
+  th{color:var(--muted); font-weight:600}
+  .note{background:var(--surface); border-left:3px solid var(--amber); border-radius:8px; padding:14px 16px; color:var(--muted); font-size:14px; margin-top:20px}
+  footer{border-top:1px solid var(--border); padding:30px 0; color:var(--muted); font-size:13.5px}
+  .foot{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  @media (max-width:860px){
+    h1{font-size:34px}
+    .cards,.dl{grid-template-columns:1fr}
+    .nav-links{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <div class="logo"><span class="dot">P</span> N2N LAN Pro</div>
+    <div class="nav-links">
+      <a href="#features">能力</a>
+      <a href="#download">下载</a>
+      <a href="#cli">命令行</a>
+      <a href="#limits">限制</a>
+      <a class="gh" href="https://github.com/zgs7157/n2n-lan-pro" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">专业版 · 房间码与免费版互通</div>
+    <h1>N2N LAN <span class="pro">PRO</span></h1>
+    <p class="sub">一个房间码，把远方的两台电脑变成同一个局域网。在免费版之上，补上网络诊断、连接审计、房间库与高级参数——给要看清链路的网络排障与安全测试用。</p>
+    <div class="cta">
+      <a class="btn primary" href="#download">下载 Pro 版</a>
+      <a class="btn ghost" href="https://github.com/zgs7157/n2n-lan" target="_blank" rel="noopener">免费版仓库</a>
+    </div>
+
+    <div class="shot">
+      <img src="images/pro-main.png" alt="N2N LAN Pro 主界面">
+      <div class="cap">主界面：沿用免费版布局，工具条新增 网络诊断 / 连接审计 / 房间库 / 高级参数</div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>四块专为排障准备的能力</h2>
+      <p>免费版负责「连上」；Pro 版负责「连上之后看得见」。</p>
+    </div>
+    <div class="cards">
+      <div class="card pro">
+        <h3>网络诊断</h3>
+        <p>本机摘要（公网 v4/v6、网关、DNS、虚拟网卡）、整段子网存活扫描（并发 ping + ARP 取 MAC）、端口探测 open/closed/filtered、延迟丢包抖动、MTU 二分探测、路由表与 DNS 反查。</p>
+      </div>
+      <div class="card pro">
+        <h3>连接审计</h3>
+        <p>进房 / 退房 / 切网 / 失败原因自动写入 JSONL，面板倒序查看，一键导出 Markdown 报告与 JSON 原始记录，方便留档或贴给同事。</p>
+      </div>
+      <div class="card pro">
+        <h3>房间库</h3>
+        <p>常去房间存成档案（名称 / 房间码 / 身份 / 服务器 / 备注），一键进入或切换，不用每次重新粘贴邀请码。</p>
+      </div>
+      <div class="card pro">
+        <h3>高级参数 + 命令行</h3>
+        <p>自定义 supernode、强制 IPv6 或同局域网转发、精细 MTU、可选头部加密、报文转发与 PMTU 发现；另有完全无界面的 CLI，可直接进脚本。</p>
+      </div>
+    </div>
+
+    <div class="shot">
+      <img src="images/pro-diagnose.png" alt="Pro 网络诊断面板实测">
+      <div class="cap">诊断面板实测：本机摘要、Ping 统计（10/10 通，0% 丢包）、端口探测（路由器 80 open 14 ms）</div>
+    </div>
+  </div>
+</section>
+
+<section id="download" style="background:var(--surface); border-block:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>下载</h2>
+      <p>本站可直接下载，也可以把直链交给 IDM / 迅雷 / aria2。Pro 与免费版可以并存在同一台机器上。</p>
+    </div>
+    <div class="dl">
+      <div class="box pro">
+        <h3>Windows 安装程序（推荐）</h3>
+        <div class="meta">n2n-lan-pro-setup-1.0.0.exe · 45 MB · Windows 10/11 64 位</div>
+        <p>独立 AppId，与免费版并存互不影响；自带卸载程序与带图标的桌面快捷方式，默认装到 <code>Program Files\n2n-lan-pro</code>。首次开房若弹权限确认，点「是」即可。</p>
+        <div class="actions">
+          <a class="btn primary" href="downloads/n2n-lan-pro-setup-1.0.0.exe" download>直接下载</a>
+          <button class="btn ghost" type="button" id="copyDl">复制直链</button>
+        </div>
+        <div class="link" id="dlUrl">https://zgs7157.github.io/n2n-lan-pro/downloads/n2n-lan-pro-setup-1.0.0.exe</div>
+        <p class="tip">直链可直接粘贴进 IDM / 迅雷 / Motrix；命令行满速下载：</p>
+        <p class="tip"><code>aria2c -x 16 -s 16 https://zgs7157.github.io/n2n-lan-pro/downloads/n2n-lan-pro-setup-1.0.0.exe</code></p>
+        <p class="tip">校验 sha256：<code style="font-size:11px">91c9bbc9f3336d2d024d50916fdc4e189f40d24b65adab6d5055dcfbed078942</code></p>
+        <p class="tip">绿色版（免安装）：<a href="downloads/n2n-lan-pro.zip" download>n2n-lan-pro.zip（43 MB）</a></p>
+      </div>
+      <div class="box">
+        <h3>源码 / 构建</h3>
+        <div class="meta">github.com/zgs7157/n2n-lan-pro</div>
+        <p>Pro 的界面与诊断引擎全部是 Python 标准库实现（<code>client/n2n_pro_manager.py</code>、<code>client/n2n_pro_core.py</code>），打包脚本 <code>tools/build_pro.ps1</code>，安装脚本 <code>setup_pro.iss</code>。房间码派生与协议直接复用免费版，保证两版互通。</p>
+        <div class="actions">
+          <a class="btn ghost" href="https://github.com/zgs7157/n2n-lan-pro" target="_blank" rel="noopener">打开仓库</a>
+        </div>
+        <p class="tip">房间码互通示例：<code>J7N3-WD8Y</code> → community <code>room-j7n3-wd8y</code>、网段 <code>10.240.0</code>、密钥 <code>d3ee528c5ac6b776</code>，与免费版逐字一致。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cli">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>无界面命令行</h2>
+      <p>给脚本和自动化用：七个子命令，加 <code>--json</code> 出结构化结果。</p>
+    </div>
+<pre>python n2n_pro_manager.py --cli doctor
+python n2n_pro_manager.py --cli scan 192.168.1.0/24
+python n2n_pro_manager.py --cli ports 10.240.0.1 -p "22,80,7654,8000-8100"
+python n2n_pro_manager.py --cli ping 10.240.0.2 -n 10
+python n2n_pro_manager.py --cli mtu 192.168.1.1
+python n2n_pro_manager.py --cli route
+python n2n_pro_manager.py --cli dns 10.240.0.1</pre>
+    <table>
+      <tr><th>命令</th><th>作用</th></tr>
+      <tr><td><code>doctor</code></td><td>本机网络摘要：主机名、本机/公网 IP、网关、DNS、虚拟网卡</td></tr>
+      <tr><td><code>scan</code></td><td>整段子网存活扫描，输出 RTT 与 MAC</td></tr>
+      <tr><td><code>ports</code></td><td>端口三态探测，支持区间写法</td></tr>
+      <tr><td><code>ping</code></td><td>延迟统计：丢包率、min/avg/max、抖动</td></tr>
+      <tr><td><code>mtu</code></td><td>最大不分片载荷与链路 MTU</td></tr>
+      <tr><td><code>route</code> / <code>dns</code></td><td>路由表 / DNS 反查</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="limits" style="background:var(--surface); border-block:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>已知限制（实测确认）</h2>
+      <p>写在前面，省得你踩坑。</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <h3>同一时刻只能一个房间在线</h3>
+        <p>Windows 只有一张 TAP 网卡（<code>TAP-Windows Adapter V9</code>），n2n 无法靠设备名区分多实例。所以「房间库」是档案 + 一键切换，切换约 2–5 秒重连，不是真并发。</p>
+      </div>
+      <div class="card">
+        <h3>头部加密会断开与免费版的互通</h3>
+        <p><code>-H</code> / <code>-A</code> 改变报文头部，免费版不认。默认关闭，只有在「不需要和免费版互通」时才建议打开。</p>
+      </div>
+      <div class="card">
+        <h3>Pro 不跟随免费版的版本号</h3>
+        <p>Pro 的自动更新检查已关闭，避免把免费版的新版本误判为 Pro 升级；升级请到本页或 Releases 手动下载。</p>
+      </div>
+      <div class="card">
+        <h3>诊断能力有边界</h3>
+        <p>端口探测走 TCP connect，UDP 服务探不到；扫描速度受并发与超时限制，跨网段扫描会被边界设备拦掉大半——这是网络本身，不是客户端。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>MIT License · 基于 n2n（GPLv3）与 OpenVPN TAP 驱动（GPLv2）</div>
+    <div>
+      <a href="https://github.com/zgs7157/n2n-lan-pro" target="_blank" rel="noopener">GitHub</a>
+      &nbsp;·&nbsp; <a href="https://github.com/zgs7157/n2n-lan-pro/blob/main/README.md" target="_blank" rel="noopener">文档</a>
+      &nbsp;·&nbsp; <a href="https://github.com/zgs7157/n2n-lan" target="_blank" rel="noopener">免费版</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.getElementById('copyDl');
+  var url = 'https://zgs7157.github.io/n2n-lan-pro/downloads/n2n-lan-pro-setup-1.0.0.exe';
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    function done(ok){
+      btn.textContent = ok ? '已复制 ✓' : '复制失败，请手动选中';
+      setTimeout(function(){ btn.textContent = '复制直链'; }, 2000);
+    }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.style.position='absolute'; ta.style.left='-9999px';
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch(e){}
+      document.body.removeChild(ta);
+      done(ok);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function(){ done(true); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# 本机配置（含房间密钥与密码）
+client/config.json
+client/config_pro.json
+
+# 运行日志与审计
+client/logs/
+client/logs_pro/
+client/audit_reports/
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 构建产物
+client_pro/
+dist_installer_pro/
+build_tmp/
+
+# 根目录临时 zip（官网下载用 docs/downloads 内的那份）
+/*.zip
