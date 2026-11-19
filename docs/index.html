@@ -25,6 +25,11 @@
   .nav-links a{color:var(--muted)}
   .nav-links a:hover{color:var(--text); text-decoration:none}
   .gh{border:1px solid var(--border); padding:6px 12px; border-radius:999px}
+  .nav-links .free{
+    color:var(--accent); border:1px solid rgba(99,199,77,.45); background:rgba(99,199,77,.08);
+    padding:6px 12px; border-radius:999px; font-weight:600;
+  }
+  .nav-links .free:hover{text-decoration:none; background:rgba(99,199,77,.16); border-color:var(--accent)}
   header.hero{padding:86px 0 64px; text-align:center}
   .badge{display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(228,101,95,.5); color:var(--pro); font-size:13px; padding:5px 12px; border-radius:999px; margin-bottom:22px}
   h1{font-size:46px; line-height:1.18; margin:0 0 14px; letter-spacing:-1px}
@@ -83,6 +88,7 @@
       <a href="#download">下载</a>
       <a href="#cli">命令行</a>
       <a href="#limits">限制</a>
+      <a class="free" href="https://zgs7157.github.io/n2n-lan/">免费版 ↗</a>
       <a class="gh" href="https://github.com/zgs7157/n2n-lan-pro" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
@@ -95,7 +101,7 @@
     <p class="sub">一个房间码，把远方的两台电脑变成同一个局域网。在免费版之上，补上网络诊断、连接审计、房间库与高级参数——给要看清链路的网络排障与安全测试用。</p>
     <div class="cta">
       <a class="btn primary" href="#download">下载 Pro 版</a>
-      <a class="btn ghost" href="https://github.com/zgs7157/n2n-lan" target="_blank" rel="noopener">免费版仓库</a>
+      <a class="btn ghost" href="https://zgs7157.github.io/n2n-lan/">免费版官网</a>
     </div>
 
     <div class="shot">
@@ -143,6 +149,7 @@
       <h2>下载</h2>
       <p>本站可直接下载，也可以把直链交给 IDM / 迅雷 / aria2。Pro 与免费版可以并存在同一台机器上。</p>
     </div>
+    <div class="note" style="margin-top:0; margin-bottom:24px">只想先连上、不需要诊断与审计？<a href="https://zgs7157.github.io/n2n-lan/">去免费版官网 ↗</a> —— 房间码与 Pro 完全互通，两版可以进同一个房间、也可以同时装在电脑上。</div>
     <div class="dl">
       <div class="box pro">
         <h3>Windows 安装程序（推荐）</h3>
@@ -229,7 +236,7 @@ python n2n_pro_manager.py --cli dns 10.240.0.1</pre>
     <div>
       <a href="https://github.com/zgs7157/n2n-lan-pro" target="_blank" rel="noopener">GitHub</a>
       &nbsp;·&nbsp; <a href="https://github.com/zgs7157/n2n-lan-pro/blob/main/README.md" target="_blank" rel="noopener">文档</a>
-      &nbsp;·&nbsp; <a href="https://github.com/zgs7157/n2n-lan" target="_blank" rel="noopener">免费版</a>
+      &nbsp;·&nbsp; <a href="https://zgs7157.github.io/n2n-lan/">免费版官网</a>
     </div>
   </div>
 </footer>
