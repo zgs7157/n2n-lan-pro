@@ -2,11 +2,11 @@
 ; 编译：ISCC.exe setup_pro.iss
 ; 与免费版独立：不同 AppId，可与免费版并存
 #define MyAppName "N2N LAN Pro"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "n2n-lan"
 #define MyAppURL "https://zgs7157.github.io/n2n-lan-pro/"
 #define MyAppExeName "n2n_pro_manager.exe"
-#define MyAppIcon "n2n-lan.ico"
+#define MyAppIcon "n2n-lan-pro.ico"
 
 [Setup]
 AppId={{B3F7D2E1-6A9C-4F58-9D24-7E1C5A8B3D62}
@@ -17,7 +17,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}releases
-VersionInfoVersion=1.0.0.0
+VersionInfoVersion=1.0.1.0
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoDescription={#MyAppName} 安装程序
 VersionInfoProductName={#MyAppName}

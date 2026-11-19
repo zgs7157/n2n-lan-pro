@@ -1,12 +1,12 @@
 # N2N LAN Pro 打包脚本（Windows）
 # 用法：pwsh -NoProfile -File tools\build_pro.ps1
-# 产物：client_pro（绿色版目录）、n2n-lan-pro.zip、dist_installer_pro\n2n-lan-pro-setup-1.0.0.exe
+# 产物：client_pro（绿色版目录）、n2n-lan-pro.zip、dist_installer_pro\n2n-lan-pro-setup-1.0.1.exe
 
 $ErrorActionPreference = "Stop"
 $root = "D:\N2N\n2n-lan-pro"
 $py = "C:\Python314\python.exe"
 $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-$proName = "n2n-lan-pro-setup-1.0.0.exe"
+$proName = "n2n-lan-pro-setup-1.0.1.exe"
 Set-Location $root
 
 $tmp = Join-Path $root "build_tmp\pro"
@@ -24,7 +24,7 @@ Write-Host "== 1/6 编译 Pro 主程序 =="
 New-Item -ItemType Directory -Force -Path $tmp, $dist | Out-Null
 & $py -m PyInstaller --noconfirm --clean --onefile --windowed `
     --name n2n_pro_manager `
-    --icon (Join-Path $root "client\n2n-lan.ico") `
+    --icon (Join-Path $root "client\n2n-lan-pro.ico") `
     --version-file (Join-Path $root "tools\version_info_pro.txt") `
     --distpath $dist --workpath $tmp --specpath $tmp `
     --paths client `
@@ -58,7 +58,7 @@ Set-Content -LiteralPath (Join-Path $clientPro "start_pro.bat") -Value $bat -Enc
 Write-Host "  start_pro.bat ok"
 
 $readme = @'
-N2N LAN Pro 1.0.0（专业版）使用说明
+N2N LAN Pro 1.0.1（专业版）使用说明
 ========================================
 
 启动：双击 n2n_pro_manager.exe（或 start_pro.bat）

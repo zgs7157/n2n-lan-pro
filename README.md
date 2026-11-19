@@ -12,14 +12,14 @@
 
 | 方式 | 文件 | 说明 |
 |---|---|---|
-| 安装包（推荐） | `n2n-lan-pro-setup-1.0.0.exe` | 45 MB，独立 AppId，可与免费版并存，自带卸载程序与带图标的桌面快捷方式 |
+| 安装包（推荐） | `n2n-lan-pro-setup-1.0.1.exe` | 44 MB，独立 AppId，可与免费版并存，自带卸载程序与带图标的桌面快捷方式 |
 | 绿色版 | `n2n-lan-pro.zip` | 43 MB，解压双击 `start_pro.bat` |
 | 官网直下 | <https://zgs7157.github.io/n2n-lan-pro/#download> | 站内直下 + 直链 + aria2 命令 |
 
 安装包 sha256：
 
 ```
-91c9bbc9f3336d2d024d50916fdc4e189f40d24b65adab6d5055dcfbed078942
+5d465d08662afe8694dd73fc3a3620ab7cd2671672a629d28fd19651068f2aaf
 ```
 
 ---
@@ -101,7 +101,7 @@ Windows 打包版等价于：`n2n_pro_manager.exe --cli doctor`。
 pwsh -NoProfile -File tools\build_pro.ps1
 ```
 
-产物：`build_tmp\dist_pro\n2n_pro_manager.exe`、`client_pro\`（绿色版目录）、`n2n-lan-pro.zip`、`dist_installer_pro\n2n-lan-pro-setup-1.0.0.exe`。
+产物：`build_tmp\dist_pro\n2n_pro_manager.exe`、`client_pro\`（绿色版目录）、`n2n-lan-pro.zip`、`dist_installer_pro\n2n-lan-pro-setup-1.0.1.exe`。
 
 直接跑源码：
 
