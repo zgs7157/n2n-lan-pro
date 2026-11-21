@@ -79,6 +79,11 @@ base.LOG_DIR = PRO_LOG_DIR
 
 import n2n_pro_core as core            # noqa: E402  （需在 base 路径改写后导入）
 
+try:
+    import room_presence               # noqa: E402  局域网房间发现（Pro 独占）
+except Exception:
+    room_presence = None
+
 
 # ----------------------------------------------------------------------------
 # Pro 文案（跟随免费版的语言切换）
@@ -91,6 +96,18 @@ PRO_TEXT = {
         "btn_audit": "连接审计",
         "btn_profiles": "房间库",
         "btn_adv": "高级参数",
+        "btn_near": "附近房间",
+        "near_title": "附近房间",
+        "near_hint": "同一局域网里有人开房时，房间会自动出现在这里（对方需运行 1.2.2 / Pro 1.0.2 及以上版本）。"
+                     "双击即可直接加入。",
+        "near_col_code": "房间码", "near_col_host": "房主", "near_col_count": "人数",
+        "near_col_src": "来源 IP", "near_col_server": "服务器", "near_col_ver": "版本",
+        "near_join": "加入选中", "near_refresh": "刷新",
+        "near_empty": "暂未发现房间 —— 等对方开着房间，几秒内会自动出现",
+        "near_none_sel": "请先选中一个房间",
+        "near_stat": "发现 %(n)d 个房间 · 每 4 秒自动刷新",
+        "near_busy": "正在切换房间，请稍候…",
+        "near_joining": "正在加入 %(code)s …",
         "tip": "专业版：诊断面板 · 连接审计 · 房间库 · 高级参数；房间码与免费版完全互通",
         "diag_title": "网络诊断",
         "audit_title": "连接审计",
@@ -152,6 +169,18 @@ PRO_TEXT = {
         "btn_audit": "Audit",
         "btn_profiles": "Room vault",
         "btn_adv": "Advanced",
+        "btn_near": "Nearby rooms",
+        "near_title": "Nearby rooms",
+        "near_hint": "Rooms opened by others on the same LAN show up here automatically "
+                     "(both sides need 1.2.2 / Pro 1.0.2 or newer). Double-click to join.",
+        "near_col_code": "Room code", "near_col_host": "Host", "near_col_count": "Members",
+        "near_col_src": "From IP", "near_col_server": "Server", "near_col_ver": "Version",
+        "near_join": "Join selected", "near_refresh": "Refresh",
+        "near_empty": "No rooms yet — they appear within seconds while a host keeps a room open",
+        "near_none_sel": "Select a room first",
+        "near_stat": "%(n)d room(s) found · auto-refresh every 4 s",
+        "near_busy": "Switching rooms, please wait…",
+        "near_joining": "Joining %(code)s …",
         "tip": "Pro: diagnostics · audit · room vault · advanced params; room codes are fully compatible with the free edition",
         "diag_title": "Network diagnostics",
         "audit_title": "Connection audit",
@@ -238,11 +267,25 @@ class ProApp(base.App):
         self._profiles_win = None
         self._adv_win = None
         self._pro_workers = 0
+        # 局域网房间发现：常驻监听 23335，收到别人的房间公告就列出来
+        self._near_win = None
+        self._near_tree = None
+        self._btn_near = None
+        self._near_last = 0.0
+        self._near_sig = None
+        self.discovery = None
+        if room_presence is not None:
+            try:
+                self.discovery = room_presence.RoomDiscovery()
+                self.discovery.start()
+            except Exception:
+                self.discovery = None
 
         root.title("%s %s" % (core.PRO_NAME, core.PRO_VERSION))
-        root.geometry("820x700")
-        root.minsize(760, 640)
+        root.geometry("900x780")
+        root.minsize(820, 700)
         self._apply_pro_look()
+        self.root.after(2000, self._near_tick)
 
     # ---------------- 主界面：沿用免费版布局，追加 Pro 标识与工具条 ----------------
     def _apply_pro_look(self):
@@ -264,8 +307,10 @@ class ProApp(base.App):
         except Exception:
             pass
 
-        # Pro 工具条：插在「联机玩法」提示之前
+        # Pro 工具条：插在「联机玩法」提示之前（第一个是 Pro 独有的附近房间）
         bar = ttk.Frame(self.root)
+        self._btn_near = ttk.Button(bar, text=self._near_btn_text(), command=self.open_nearby)
+        self._btn_near.pack(side="left", padx=(0, 8))
         for text, cmd, pack_side in (
             (tp("btn_diag"), self.open_diag, "left"),
             (tp("btn_audit"), self.open_audit, "left"),
@@ -277,6 +322,168 @@ class ProApp(base.App):
         tk.Label(self.root, text=tp("tip"), fg="#666", font=("", 9),
                  wraplength=760, justify="left").pack(anchor="w", padx=16, pady=(4, 2),
                                                      before=self.lbl_tip)
+
+    # ---------------- 附近房间（Pro 独占） ----------------
+    def _near_list(self):
+        """附近房间列表，排除「自己当前所在的这个房间」"""
+        if self.discovery is None:
+            return []
+        try:
+            rows = self.discovery.snapshot()
+        except Exception:
+            return []
+        cur = ((self._params or {}).get("code") or "").replace("-", "").upper()
+        out = []
+        for r in rows:
+            code = (r.get("code") or "").replace("-", "").upper()
+            if cur and code == cur:
+                continue
+            out.append(r)
+        return out
+
+    def _near_count(self):
+        return len(self._near_list())
+
+    def _near_btn_text(self):
+        n = self._near_count()
+        return "%s (%d)" % (tp("btn_near"), n)
+
+    def _near_tick(self):
+        """每 3 秒刷新工具条角标；附近房间窗口开着就同步列表"""
+        try:
+            if self._btn_near is not None:
+                want = self._near_btn_text()
+                if self._btn_near.cget("text") != want:
+                    self._btn_near.configure(text=want)
+        except Exception:
+            pass
+        try:
+            if self._near_win is not None and self._near_win.winfo_exists():
+                self._near_refresh()
+        except Exception:
+            pass
+        try:
+            self.root.after(3000, self._near_tick)
+        except Exception:
+            pass
+
+    def open_nearby(self):
+        if self._near_win is not None and self._near_win.winfo_exists():
+            self._near_win.lift()
+            return
+        win = tk.Toplevel(self.root)
+        self._near_win = win
+        win.title("%s — %s" % (tp("title"), tp("near_title")))
+        win.geometry("900x520")
+        win.transient(self.root)
+
+        ttk.Label(win, text=tp("near_hint"), foreground="#666", wraplength=840,
+                  justify="left").pack(anchor="w", padx=12, pady=(10, 4))
+        self._near_stat = tk.Label(win, text="", fg="#777", font=("", 9))
+        self._near_stat.pack(anchor="w", padx=12)
+
+        body = ttk.Frame(win)
+        body.pack(fill="both", expand=True, padx=12, pady=(6, 0))
+        cols = ("code", "host", "count", "src", "server", "ver")
+        tree = ttk.Treeview(body, columns=cols, show="headings", height=12)
+        for c, t, w in (("code", tp("near_col_code"), 120),
+                        ("host", tp("near_col_host"), 118),
+                        ("count", tp("near_col_count"), 60),
+                        ("src", tp("near_col_src"), 110),
+                        ("server", tp("near_col_server"), 236),
+                        ("ver", tp("near_col_ver"), 62)):
+            tree.heading(c, text=t)
+            tree.column(c, width=w, minwidth=w, anchor="w", stretch=False)
+        vsb = ttk.Scrollbar(body, orient="vertical", command=tree.yview)
+        tree.configure(yscrollcommand=vsb.set)
+        tree.pack(side="left", fill="both", expand=True)
+        vsb.pack(side="right", fill="y")
+        tree.bind("<Double-1>", lambda e: self._near_join())
+        self._near_tree = tree
+        self._near_rows = {}
+        self._near_sig = None
+
+        btns = ttk.Frame(win)
+        btns.pack(fill="x", padx=12, pady=(8, 12))
+        ttk.Button(btns, text=tp("near_join"), command=self._near_join).pack(side="left")
+        ttk.Button(btns, text=tp("near_refresh"), command=self._near_refresh).pack(side="left", padx=6)
+        self._near_refresh()
+
+    def _near_refresh(self):
+        tree = getattr(self, "_near_tree", None)
+        if tree is None:
+            return
+        rows = self._near_list()
+        sig = tuple((r.get("code"), r.get("count"), r.get("host"), r.get("server")) for r in rows)
+        # 内容没变就不重建，避免每 3 秒把用户的选中项刷掉
+        if sig == getattr(self, "_near_sig", None):
+            return
+        self._near_sig = sig
+        sel_code = ""
+        for iid in tree.selection():
+            row = (getattr(self, "_near_rows", {}) or {}).get(str(iid))
+            if row:
+                sel_code = row.get("code") or ""
+        self._near_rows = {str(i): r for i, r in enumerate(rows)}
+        try:
+            tree.delete(*tree.get_children())
+            for iid, r in self._near_rows.items():
+                code = r.get("code") or ""
+                show = base.format_code(code) if len(base.clean_code(code)) == 8 else code
+                tree.insert("", "end", iid=iid, values=(
+                    show, r.get("host", "") or "—",
+                    r.get("count") or 0, r.get("src", "") or "—",
+                    r.get("server", "") or "—", r.get("ver", "") or "—"))
+            if sel_code:
+                for iid, r in self._near_rows.items():
+                    if r.get("code") == sel_code:
+                        tree.selection_set(iid)
+                        break
+        except Exception:
+            return
+        try:
+            if rows:
+                self._near_stat.configure(text=tp("near_stat", n=len(rows)))
+            else:
+                self._near_stat.configure(text=tp("near_empty"))
+        except Exception:
+            pass
+
+    def _near_join(self):
+        tree = getattr(self, "_near_tree", None)
+        if tree is None:
+            return
+        sel = tree.selection()
+        if not sel:
+            messagebox.showwarning(tp("near_title"), tp("near_none_sel"))
+            return
+        row = (getattr(self, "_near_rows", {}) or {}).get(str(sel[0]))
+        if not row:
+            return
+        if self._busy:
+            messagebox.showinfo(tp("near_title"), tp("near_busy"))
+            return
+        code = base.clean_code(row.get("code") or "")
+        if len(code) != 8:
+            messagebox.showwarning(tp("near_title"), tp("pf_bad_code"))
+            return
+        p = {"name": row.get("name") or code, "code": code, "role": "guest",
+             "server": row.get("server") or "", "ip": row.get("host") or "",
+             "note": "nearby %s" % (row.get("src") or "")}
+        try:
+            self.audit.log("nearby_join", code=code, role="guest",
+                           server=p["server"], detail=row.get("src") or "")
+        except Exception:
+            pass
+        if self._near_win is not None and self._near_win.winfo_exists():
+            try:
+                self._near_win.destroy()
+            except Exception:
+                pass
+            self._near_win = None
+            self._near_tree = None
+        self._set_state("preparing", tp("near_joining", code=base.format_code(code)))
+        self._enter_profile(p)
 
     # ---------------- 更新策略（Pro 独立版本号，不误报免费版版本） ----------------
     def _maybe_auto_check(self):
@@ -729,12 +936,44 @@ class ProApp(base.App):
         base.save_config(self.cfg)
         self._enter_profile(p)
 
+    def _leave_silent(self):
+        """切房间时不弹确认框，直接收摊（房间库 / 附近房间一键切换用）"""
+        conn = dict(self._connected or {})
+        try:
+            self.session.stop()
+            self.host_sn.stop()
+            self.ip_alloc.stop()
+        except Exception:
+            pass
+        self._connected = None
+        self._busy = False
+        try:
+            self.chat_listener.clear_room()
+            if self.presence is not None:
+                self.presence.clear_room()
+            if self.chat_win is not None:
+                self._close_chat()
+            if self.mem_tree is not None:
+                self.mem_tree.delete(*self.mem_tree.get_children())
+                self.lbl_members.configure(text=base.tr("members_wait"))
+            if self.card.winfo_ismapped():
+                self.card.pack_forget()
+        except Exception:
+            pass
+        self._set_state("idle")
+        try:
+            self.audit.log("left", code=conn.get("code"), ip=conn.get("ip"),
+                           role="host" if self._is_host else "guest",
+                           detail="auto (switch room)")
+        except Exception:
+            pass
+
     def _enter_profile(self, p):
         if self._busy:
             return
         if self.session.running or self._connected:
             try:
-                self.leave_room()
+                self._leave_silent()
             except Exception:
                 pass
             time.sleep(1.0)

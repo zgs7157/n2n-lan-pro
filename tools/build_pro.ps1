@@ -1,12 +1,12 @@
 # N2N LAN Pro 打包脚本（Windows）
 # 用法：pwsh -NoProfile -File tools\build_pro.ps1
-# 产物：client_pro（绿色版目录）、n2n-lan-pro.zip、dist_installer_pro\n2n-lan-pro-setup-1.0.1.exe
+# 产物：client_pro（绿色版目录）、n2n-lan-pro.zip、dist_installer_pro\n2n-lan-pro-setup-1.0.2.exe
 
 $ErrorActionPreference = "Stop"
 $root = "D:\N2N\n2n-lan-pro"
 $py = "C:\Python314\python.exe"
 $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-$proName = "n2n-lan-pro-setup-1.0.1.exe"
+$proName = "n2n-lan-pro-setup-1.0.2.exe"
 Set-Location $root
 
 $tmp = Join-Path $root "build_tmp\pro"
