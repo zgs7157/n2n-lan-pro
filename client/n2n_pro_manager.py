@@ -253,6 +253,10 @@ def tp(key, **kw):
 # 主应用
 # ----------------------------------------------------------------------------
 class ProApp(base.App):
+    # 求 Star 指向 Pro 自己的仓库，文案里也用它自己的名字
+    REPO_URL = "https://github.com/zgs7157/n2n-lan-pro"
+    STAR_APP_NAME = "N2N LAN Pro"
+
     def __init__(self, root):
         super().__init__(root)
         # 换成支持高级参数的 edge 会话

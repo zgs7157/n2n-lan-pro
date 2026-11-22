@@ -25,7 +25,7 @@ import n2n_room_manager as base
 
 IS_WINDOWS = base.IS_WINDOWS
 IS_MACOS = base.IS_MACOS
-PRO_VERSION = "1.0.2"
+PRO_VERSION = "1.0.3"
 PRO_NAME = "N2N LAN Pro"
 
 # 默认端口探测清单：常用远程管理 / 联机 / n2n 相关端口
