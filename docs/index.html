@@ -30,6 +30,12 @@
     padding:6px 12px; border-radius:999px; font-weight:600;
   }
   .nav-links .free:hover{text-decoration:none; background:rgba(99,199,77,.16); border-color:var(--accent)}
+  .burger{display:none; background:none; border:0; cursor:pointer; padding:6px; -webkit-tap-highlight-color:transparent}
+  .burger span{display:block; width:22px; height:2px; background:var(--text); margin:5px 0; border-radius:2px; transition:transform .18s ease, opacity .18s ease}
+  .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .burger.open span:nth-child(2){opacity:0}
+  .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  body.nav-open::before{content:""; position:fixed; inset:0; background:rgba(5,8,10,.62); z-index:9}
   header.hero{padding:86px 0 64px; text-align:center}
   .badge{display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(228,101,95,.5); color:var(--pro); font-size:13px; padding:5px 12px; border-radius:999px; margin-bottom:22px}
   h1{font-size:46px; line-height:1.18; margin:0 0 14px; letter-spacing:-1px}
@@ -74,7 +80,26 @@
   @media (max-width:860px){
     h1{font-size:34px}
     .cards,.dl{grid-template-columns:1fr}
-    .nav-links{display:none}
+    .nav-links{
+      display:none; position:absolute; top:62px; left:0; right:0; flex-direction:column;
+      background:var(--bg); border-bottom:1px solid var(--border);
+      padding:14px 24px 18px; gap:16px; align-items:flex-start; font-size:15px;
+      box-shadow:0 14px 28px rgba(0,0,0,.4);
+    }
+    .nav-links.open{display:flex}
+    .nav-links a{width:100%; padding:3px 0}
+    .burger{display:block; margin-left:auto}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 18px}
+    .nav-links{padding:12px 18px 16px}
+    header.hero{padding:64px 0 44px}
+    section{padding:48px 0}
+    h2{font-size:24px}
+    .sub{font-size:15.5px}
+    .card,.box{padding:20px 18px}
+    pre{font-size:12px; padding:14px 14px}
+    th,td{font-size:13px; padding:9px 6px}
   }
 </style>
 </head>
@@ -83,7 +108,7 @@
 <nav>
   <div class="wrap nav-inner">
     <div class="logo"><span class="dot">P</span> N2N LAN Pro</div>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="#features">能力</a>
       <a href="#download">下载</a>
       <a href="#cli">命令行</a>
@@ -91,6 +116,7 @@
       <a class="free" href="https://zgs7157.github.io/n2n-lan/">免费版 ↗</a>
       <a class="gh" href="https://github.com/zgs7157/n2n-lan-pro" target="_blank" rel="noopener">GitHub</a>
     </div>
+    <button class="burger" id="burger" type="button" aria-label="打开菜单" aria-controls="navLinks" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
@@ -243,6 +269,30 @@ python n2n_pro_manager.py --cli dns 10.240.0.1</pre>
 
 <script>
 (function(){
+  var burger = document.getElementById('burger');
+  var navLinks = document.getElementById('navLinks');
+  if (burger && navLinks) {
+    var setOpen = function(open){
+      navLinks.classList.toggle('open', open);
+      burger.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.classList.toggle('nav-open', open);
+    };
+    burger.addEventListener('click', function(e){
+      e.stopPropagation();
+      setOpen(!navLinks.classList.contains('open'));
+    });
+    navLinks.addEventListener('click', function(e){
+      if (e.target.tagName === 'A') { setOpen(false); }
+    });
+    document.addEventListener('click', function(e){
+      if (navLinks.classList.contains('open') && !e.target.closest('#navLinks, #burger')) { setOpen(false); }
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') { setOpen(false); }
+    });
+  }
+
   var btn = document.getElementById('copyDl');
   var url = 'https://github.com/zgs7157/n2n-lan-pro/releases/download/Pro-1.0.3/n2n-lan-pro-setup-1.0.3.exe';
   if (!btn) return;
