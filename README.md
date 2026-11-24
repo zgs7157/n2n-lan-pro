@@ -1,5 +1,7 @@
 # N2N LAN Pro
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-3DA639.svg)](LICENSE) [![Release](https://img.shields.io/badge/release-1.0.3-E4655F.svg)](https://github.com/zgs7157/n2n-lan-pro/releases/latest)
+
 > 专业版虚拟局域网客户端：在免费版「一个房间码就能异地组网」的基础上，补上**网络诊断、连接审计、房间库、高级参数**四块能力。
 > 界面沿用免费版布局，独立安装包，**房间码与免费版完全互通**——两版可以互进对方的房间。
 
@@ -131,7 +133,7 @@ python client/n2n_pro_manager.py --cli doctor
 
 ## 七、许可与来源
 
-- 客户端代码（`client/n2n_*.py`、本仓库脚本）：MIT
+- 客户端代码（`client/n2n_*.py`、本仓库脚本）：MIT（见 [LICENSE](LICENSE)）
 - n2n 引擎：GPLv3（预编译 Windows x64 版随包提供）
 - OpenVPN TAP-Windows 驱动：GPLv2（官方签名组件）
 
