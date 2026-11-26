@@ -316,5 +316,18 @@ python n2n_pro_manager.py --cli dns 10.240.0.1</pre>
   });
 })();
 </script>
+
+<!-- 访问统计：填入 Cloudflare Web Analytics 的 token 后自动生效，留空则完全不加载 -->
+<script>
+(function(){
+  var CF_TOKEN = "";
+  if (!CF_TOKEN) return;
+  var s = document.createElement('script');
+  s.defer = true;
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon', '{"token":"' + CF_TOKEN + '"}');
+  document.head.appendChild(s);
+})();
+</script>
 </body>
 </html>
